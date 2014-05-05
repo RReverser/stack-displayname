@@ -43,6 +43,7 @@ var assert = require('assert');
 
 var describe = it = function (name, callback) {
   callback.displayName = name;
+  callback();
 };
 
 describe('Array', function () {
