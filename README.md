@@ -28,7 +28,7 @@ However, since this property was implemented on level of developer tools of thos
 
 which doesn't say much about what and where happened.
 
-This drop-in library stringifies error stack traces in V8 both in browser and Node.js, simulating standard formatting but respecting `displayName` property, so when error occurs, you get stylish stack trace:
+This drop-in library stringifies error stack traces in V8 both in browser and Node.js, simulating standard formatting but respecting `displayName` property, so when error occurs, you get stylish stack trace with custom function names (in case of jBinary those are type descriptors and field names being processed):
 
 ![after](https://cloud.githubusercontent.com/assets/557590/2879614/7936866c-d46c-11e3-817d-9fd2898a8e51.png)
 
