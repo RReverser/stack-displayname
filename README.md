@@ -14,11 +14,11 @@ Compare stack traces of error before and after using this ability in [jBinary](h
 
 However, since this property was implemented on level of developer tools and not JS core itself, in Node.js for analogical code you still get:
 
-![before](https://cloud.githubusercontent.com/assets/557590/2878366/1265b79c-d45c-11e3-824e-fa58e5e09959.png)
+![before](https://cloud.githubusercontent.com/assets/557590/2879612/77316904-d46c-11e3-806f-4d2ae1d442df.png)
 
 This drop-in library stringifies error stack traces in V8 both in browser and Node.js that simulates core formatting but respects `displayName` property, so when error occurs, you get stylish stack trace:
 
-![after](https://cloud.githubusercontent.com/assets/557590/2878369/1db3f2f8-d45c-11e3-8aaa-2204104e2408.png)
+![after](https://cloud.githubusercontent.com/assets/557590/2879614/7936866c-d46c-11e3-817d-9fd2898a8e51.png)
 
 ## Installation and usage
 
