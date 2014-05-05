@@ -2,25 +2,37 @@
 
 > Show custom function names in error stack traces
 
-## Description
+## Explanation
 
-[Safari](https://bugs.webkit.org/show_bug.cgi?id=25171), [Chromium](https://code.google.com/p/chromium/issues/detail?id=17356) and [Firefox](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/displayName) implemented ability to set custom string as function name via non-standard property `displayName`.
+[Chromium](https://code.google.com/p/chromium/issues/detail?id=17356) and [Firefox](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/displayName) and [Safari](https://bugs.webkit.org/show_bug.cgi?id=25171) agreed and implemented ability to set custom string as function name via non-standard property `displayName` on function instance.
 
 You can see those custom names in debugger stack and so easier track source of error in long traces of anonymous functions.
 
-Compare stack traces of error before and after using this ability in [jBinary](https://github.com/jDataView/jBinary):
+```javascript
+var f = function () {
+  throw new Error();
+};
+
+f.displayName = "super puper function";
+
+f(); // enjoy descriptive stack trace!
+```
+
+Compare informativeness of error stack traces without and with `displayName` on example of [jBinary](https://github.com/jDataView/jBinary):
 
 ![Before vs After](https://cloud.githubusercontent.com/assets/557590/2842369/ca53bed6-d073-11e3-85d9-34c18a53a5e3.png)
 
-However, since this property was implemented on level of developer tools and not JS core itself, in Node.js for analogical code you still get:
+However, since this property was implemented on level of developer tools of those browsers and not in JS core, in Node.js for analogical code you still get:
 
 ![before](https://cloud.githubusercontent.com/assets/557590/2879612/77316904-d46c-11e3-806f-4d2ae1d442df.png)
 
-This drop-in library stringifies error stack traces in V8 both in browser and Node.js that simulates core formatting but respects `displayName` property, so when error occurs, you get stylish stack trace:
+which doesn't say much about what and where happened.
+
+This drop-in library stringifies error stack traces in V8 both in browser and Node.js, simulating standard formatting but respecting `displayName` property, so when error occurs, you get stylish stack trace:
 
 ![after](https://cloud.githubusercontent.com/assets/557590/2879614/7936866c-d46c-11e3-817d-9fd2898a8e51.png)
 
-## Installation and usage
+## Installation
 
 ### In Node.js
 
@@ -38,25 +50,13 @@ require('stack-displayname');
 
 ### In Browser
 
-This script would work only in Chromium, where DevTools already respect `displayName`, but in the case you want to have custom function names in `err.stack` property of any `Error` instances (which is not natively supported), that's possible via simple script tag:
+This script might be useful only in Chromium, where DevTools already respect `displayName`, but in the case you want to have custom function names in `err.stack` property of any `Error` instances (that's not natively supported), it's possible - just include script on the page via regular tag:
 
 ```html
 <script src="stack-displayname/displayName.js"></script>
 ```
 
-Other browsers will just ignore instructions and show stack traces as usual.
-
-### Usage
-
-```javascript
-var f = function () {
-  throw new Error();
-};
-
-f.displayName = "super puper function";
-
-f(); // enjoy descriptive stack trace!
-```
+Non-supported browsers will just ignore it and show stack traces as usual.
 
 ## License
 
