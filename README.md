@@ -2,11 +2,17 @@
 
 > Show custom function names in error stack traces
 
-## Explanation
+## Firstly there was idea...
 
-[Chromium](https://code.google.com/p/chromium/issues/detail?id=17356) and [Firefox](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/displayName) and [Safari](https://bugs.webkit.org/show_bug.cgi?id=25171) agreed and implemented ability to set custom string as function name via non-standard property `displayName` on function instance.
+[Chromium](https://code.google.com/p/chromium/issues/detail?id=17356), [Firefox](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/displayName) and [Safari](https://bugs.webkit.org/show_bug.cgi?id=25171) agreed and implemented ability to set custom string as function name via non-standard property `displayName` on function instance.
 
 You can see those custom names in debugger stack and so easier track source of error in long traces of anonymous functions.
+
+Compare informativeness of error stack traces without and with `displayName` on example of [jBinary](https://github.com/jDataView/jBinary):
+
+![Before vs After](https://cloud.githubusercontent.com/assets/557590/2842369/ca53bed6-d073-11e3-85d9-34c18a53a5e3.png)
+
+### And it's usage was simple
 
 ```javascript
 var f = function () {
@@ -18,21 +24,39 @@ f.displayName = "super puper function";
 f(); // enjoy descriptive stack trace!
 ```
 
-Compare informativeness of error stack traces without and with `displayName` on example of [jBinary](https://github.com/jDataView/jBinary):
+### But not in Node.js
 
-![Before vs After](https://cloud.githubusercontent.com/assets/557590/2842369/ca53bed6-d073-11e3-85d9-34c18a53a5e3.png)
-
-However, since this property was implemented on level of developer tools of those browsers and not in JS core, in Node.js for analogical code you still get:
-
+Since this property was implemented not in JS core but on level of developer tools, in Node.js you still get something like:
 ![before](https://cloud.githubusercontent.com/assets/557590/2879612/77316904-d46c-11e3-806f-4d2ae1d442df.png)
-
-which doesn't say much about what and where happened.
+which isn't too descriptive about what, where and why happened.
 
 This drop-in library stringifies error stack traces in V8 both in browser and Node.js, simulating standard formatting but respecting `displayName` property, so when error occurs, you get stylish stack trace with custom function names (in case of jBinary those are type descriptors and field names being processed):
 
 ![after](https://cloud.githubusercontent.com/assets/557590/2879614/7936866c-d46c-11e3-817d-9fd2898a8e51.png)
 
-## Installation
+### More crazy ideas to use this for?
+
+You can even implement own micro BDD testing framework (example taken from http://visionmedia.github.io/mocha/#bdd-interface):
+
+```javascript
+var assert = require('assert');
+
+var describe = it = function (name, callback) {
+  callback.displayName = name;
+};
+
+describe('Array', function () {
+  describe('#indexOf()', function () {
+    it('should return -1 when not present', function () {
+      assert.equal([1,2,3].indexOf(4), -2); // wrong!
+    });
+  });
+});
+```
+
+![bdd error](https://cloud.githubusercontent.com/assets/557590/2881238/cb00f0ea-d480-11e3-9d3a-63a3cd56bb53.png)
+
+## Installation - boring as usual
 
 ### In Node.js
 
