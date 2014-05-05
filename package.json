@@ -1,0 +1,26 @@
+{
+  "name": "stack-displayname",
+  "version": "1.0.0",
+  "description": "Show custom function names in error stack traces",
+  "license": "BSD",
+  "repository": "RReverser/stack-displayname",
+  "main": "displayName.js",
+  "author": "Ingvar Stepanyan <me@rreverser.com>",
+  "scripts": {
+    "pretest": "jshint displayName.js"
+  },
+  "files": [
+    "displayName.js"
+  ],
+  "keywords": [
+    "error",
+    "custom",
+    "stack",
+    "trace",
+    "function",
+    "displayName"
+  ],
+  "devDependencies": {
+    "jshint": "~2.5.0"
+  }
+}

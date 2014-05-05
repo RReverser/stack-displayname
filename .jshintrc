@@ -1,0 +1,24 @@
+{
+  "node": true,
+  "globals": {
+    "Promise": true,
+    "define": false
+  },
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "expr": true,
+  "immed": true,
+  "indent": 4,
+  "lastsemic": true,
+  "latedef": true,
+  "laxbreak": true,
+  "newcap": false,
+  "noarg": true,
+  "noempty": true,
+  "nonew": true,
+  "quotmark": "double",
+  "smarttabs": true,
+  "trailing": true,
+  "undef": true
+}
