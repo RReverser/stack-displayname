@@ -7,7 +7,8 @@
   "main": "displayName.js",
   "author": "Ingvar Stepanyan <me@rreverser.com>",
   "scripts": {
-    "pretest": "jshint displayName.js"
+    "pretest": "jshint displayName.js test.js",
+    "test": "nodeunit test.js"
   },
   "files": [
     "displayName.js"
@@ -21,6 +22,7 @@
     "displayName"
   ],
   "devDependencies": {
-    "jshint": "~2.5.0"
+    "jshint": "^2.5.0",
+    "nodeunit": "^0.8.7"
   }
 }

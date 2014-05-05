@@ -30,7 +30,7 @@ Simply install with npm as:
 npm install stack-displayname
 ```
 
-and `require` it:
+and require it:
 
 ```javascript
 require('stack-displayname');
@@ -45,6 +45,18 @@ This script would work only in Chromium, where DevTools already respect `display
 ```
 
 Other browsers will just ignore instructions and show stack traces as usual.
+
+### Usage
+
+```javascript
+var f = function () {
+  throw new Error();
+};
+
+f.displayName = "super puper function";
+
+f(); // enjoy descriptive stack trace!
+```
 
 ## License
 
