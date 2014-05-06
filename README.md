@@ -2,25 +2,62 @@
 
 > Show custom function names in error stack traces
 
-## Description
+## Firstly there was idea...
 
-[Safari](https://bugs.webkit.org/show_bug.cgi?id=25171), [Chromium](https://code.google.com/p/chromium/issues/detail?id=17356) and [Firefox](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/displayName) implemented ability to set custom string as function name via non-standard property `displayName`.
+[Chromium](https://code.google.com/p/chromium/issues/detail?id=17356), [Firefox](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/displayName) and [Safari](https://bugs.webkit.org/show_bug.cgi?id=25171) agreed and implemented ability to set custom string as function name via non-standard property `displayName` on function instance.
 
 You can see those custom names in debugger stack and so easier track source of error in long traces of anonymous functions.
 
-Compare stack traces of error before and after using this ability in [jBinary](https://github.com/jDataView/jBinary):
+Compare informativeness of error stack traces without and with `displayName` on example of [jBinary](https://github.com/jDataView/jBinary):
 
 ![Before vs After](https://cloud.githubusercontent.com/assets/557590/2842369/ca53bed6-d073-11e3-85d9-34c18a53a5e3.png)
 
-However, since this property was implemented on level of developer tools and not JS core itself, in Node.js for analogical code you still get:
+### And it's usage was simple
 
-![before](https://cloud.githubusercontent.com/assets/557590/2878366/1265b79c-d45c-11e3-824e-fa58e5e09959.png)
+```javascript
+var f = function () {
+  throw new Error();
+};
 
-This drop-in library stringifies error stack traces in V8 both in browser and Node.js that simulates core formatting but respects `displayName` property, so when error occurs, you get stylish stack trace:
+f.displayName = "super puper function";
 
-![after](https://cloud.githubusercontent.com/assets/557590/2878369/1db3f2f8-d45c-11e3-8aaa-2204104e2408.png)
+f(); // enjoy descriptive stack trace!
+```
 
-## Installation and usage
+### But not in Node.js
+
+Since this property was implemented not in JS core but on level of developer tools, in Node.js you still get something like:
+![before](https://cloud.githubusercontent.com/assets/557590/2879612/77316904-d46c-11e3-806f-4d2ae1d442df.png)
+which isn't too descriptive about what, where and why happened.
+
+This drop-in library stringifies error stack traces in V8 both in browser and Node.js, simulating standard formatting but respecting `displayName` property, so when error occurs, you get stylish stack trace with custom function names (in case of jBinary those are type descriptors and field names being processed):
+
+![after](https://cloud.githubusercontent.com/assets/557590/2879614/7936866c-d46c-11e3-817d-9fd2898a8e51.png)
+
+### More crazy ideas to use this for?
+
+You can even implement own micro BDD testing framework (example taken from http://visionmedia.github.io/mocha/#bdd-interface):
+
+```javascript
+var assert = require('assert');
+
+var describe = it = function (name, callback) {
+  callback.displayName = name;
+  callback();
+};
+
+describe('Array', function () {
+  describe('#indexOf()', function () {
+    it('should return -1 when not present', function () {
+      assert.equal([1,2,3].indexOf(4), -2); // wrong!
+    });
+  });
+});
+```
+
+![bdd error](https://cloud.githubusercontent.com/assets/557590/2881238/cb00f0ea-d480-11e3-9d3a-63a3cd56bb53.png)
+
+## Installation - boring as usual
 
 ### In Node.js
 
@@ -38,25 +75,13 @@ require('stack-displayname');
 
 ### In Browser
 
-This script would work only in Chromium, where DevTools already respect `displayName`, but in the case you want to have custom function names in `err.stack` property of any `Error` instances (which is not natively supported), that's possible via simple script tag:
+This script might be useful only in Chromium, where DevTools already respect `displayName`, but in the case you want to have custom function names in `err.stack` property of any `Error` instances (that's not natively supported), it's possible - just include script on the page via regular tag:
 
 ```html
 <script src="stack-displayname/displayName.js"></script>
 ```
 
-Other browsers will just ignore instructions and show stack traces as usual.
-
-### Usage
-
-```javascript
-var f = function () {
-  throw new Error();
-};
-
-f.displayName = "super puper function";
-
-f(); // enjoy descriptive stack trace!
-```
+Non-supported browsers will just ignore it and show stack traces as usual.
 
 ## License
 
