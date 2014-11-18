@@ -39,6 +39,7 @@ This drop-in library stringifies error stack traces in V8 both in browser and No
 You can even implement own micro BDD testing framework (example taken from http://visionmedia.github.io/mocha/#bdd-interface):
 
 ```javascript
+require('stack-displayname');
 var assert = require('assert');
 
 var describe = it = function (name, callback) {
@@ -56,6 +57,26 @@ describe('Array', function () {
 ```
 
 ![bdd error](https://cloud.githubusercontent.com/assets/557590/2881238/cb00f0ea-d480-11e3-9d3a-63a3cd56bb53.png)
+
+And it's pretty easy to compose stack trace capture with other transformations.
+
+For example, in order to filter out non-`displayName` functions:
+
+```javascript
+require('stack-displayname');
+
+var prepareStackTrace = Error.prepareStackTrace;
+
+Error.prepareStackTrace = function (err, stack) {
+	return prepareStackTrace(err, stack.filter(function (item) {
+		return item.fun.displayName;
+	}));
+};
+
+// ... your code ... //
+```
+
+![bdd error only](https://cloud.githubusercontent.com/assets/557590/5085573/e03b60a4-6f1b-11e4-8a0a-70a6dc75c414.png)
 
 ## Installation - boring as usual
 
