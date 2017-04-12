@@ -36,7 +36,7 @@ This drop-in library stringifies error stack traces in V8 both in browser and No
 
 ### More crazy ideas to use this for?
 
-You can even implement own micro BDD testing framework (example taken from http://visionmedia.github.io/mocha/#bdd-interface):
+You can even implement own micro BDD testing framework (example taken from http://mochajs.org/#bdd):
 
 ```javascript
 require('stack-displayname');
